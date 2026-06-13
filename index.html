@@ -376,7 +376,7 @@ function setBizTab(name){document.querySelectorAll('.biz-tab').forEach(x=>x.clas
 function bizToast(message){const t=$('pcToast');t.textContent=message;t.classList.add('on');clearTimeout(window.pcToastTimer);window.pcToastTimer=setTimeout(()=>t.classList.remove('on'),2200)}
 
 function score(car){let n=car.base;if(daily==='軽'&&(car.size==='SUV'||car.size==='COMPACT SUV'||car.size==='MINIVAN'))n+=2;if(mood==='広さを試す'&&(car.size==='MINIVAN'||car.size==='LUXURY'))n+=4;if(mood==='運転を楽しむ'&&(car.name==='HARRIER'||car.name==='YARIS CROSS'))n+=4;if(mood==='家族で快適'&&car.seats!=='5')n+=4;if(mood==='上質に乗る'&&(car.name==='HARRIER'||car.name==='ALPHARD'))n+=4;if(mood==='燃費を比べる'&&(car.name==='AQUA'||car.name==='YARIS CROSS'))n+=4;return Math.min(99,n)}
-function openSetup(){$('setupSheet').classList.add('on');$('setupSheet').scrollTop=0}
+function openSetup(){$('intro').classList.add('hide');$('setupSheet').classList.add('on');$('setupSheet').scrollTop=0}
 function goTop(){closeSheets();$('matchScreen').classList.remove('on');$('reserveScreen').classList.remove('on');$('mypageScreen').classList.remove('on');$('menuScreen').classList.remove('on');$('intro').classList.remove('hide');index=0;history=[];render();window.scrollTo(0,0)}
 function selectSetupMode(m){mode=m;document.querySelectorAll('[data-setup-mode]').forEach(x=>x.classList.toggle('on',x.dataset.setupMode===m))}
 const STORE_AREAS={
