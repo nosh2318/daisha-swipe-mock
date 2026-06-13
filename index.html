@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#071018">
-<title>代車・試乗.com | クルマと出会う</title>
+<title>代車.com | クルマと出会う</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -153,7 +153,7 @@ body{background:#071018}
 <body>
 <section class="pc" id="pc">
   <aside class="pc-side">
-    <div class="pc-brand">代車・試乗.com<small>PARTNER DESK</small></div>
+    <div class="pc-brand">代車.com<small>PARTNER DESK</small></div>
     <div class="pc-partner"><span>PARTNER VIEW</span><b>整備工場・販売店向け</b></div>
     <nav class="pc-nav">
       <button class="on" data-biz-tab="overview" onclick="setBizTab('overview')"><i>⌂</i>サービス概要</button>
@@ -226,12 +226,12 @@ body{background:#071018}
   <div class="orb one"></div><div class="orb two"></div><div class="noise"></div>
 
   <section class="intro" id="intro">
-    <div class="intro-brand"><i>C</i><b>CAR CONCIERGE<span>代車・試乗.com</span></b><button class="intro-menu" onclick="openMenu()">MENU</button></div>
-    <div class="brand-manifesto"><b>CAR DELIVERY EXPERIENCE</b>代車・試乗車・レンタル で、カーデリバリーを体感しよう。</div>
+    <div class="intro-brand"><i>C</i><b>CAR CONCIERGE<span>代車.com</span></b><button class="intro-menu" onclick="openMenu()">MENU</button></div>
+    <div class="brand-manifesto"><b>CAR DELIVERY EXPERIENCE</b>代車を、ご指定の場所へお届け。カーデリバリーを体感しよう。</div>
     <div class="intro-copy">
       <div class="eyebrow">YOUR PERSONAL CAR CONCIERGE</div>
       <h1>MEET YOUR<span>NEXT CAR<em>.</em></span></h1>
-      <p class="intro-lead">あなたの条件に、ぴったりの一台を。<br>選べる代車。届く試乗車。</p>
+      <p class="intro-lead">あなたの条件に、ぴったりの一台を。<br>選べる代車を、ご指定の場所までお届け。</p>
     </div>
     <div class="intro-visual"><div class="intro-sky"></div><div class="road-line"></div><img class="hero-car" src="assets/class/class_A.png" alt="Aクラス（アルファード/ヴェルファイア）"></div>
     <div class="life-cues"><div class="life-cue"><i>01 / DELIVERY</i><b>指定先へお届け</b><span>自宅・職場にも</span></div><div class="life-cue"><i>02 / KEEP GOING</i><b>予定を止めない</b><span>修理中も安心</span></div><div class="life-cue"><i>03 / REAL LIFE</i><b>暮らしで試す</b><span>家族・道・駐車場</span></div></div>
@@ -240,7 +240,7 @@ body{background:#071018}
   </section>
 
   <header class="header">
-    <div class="logo">代車・試乗.com<span>cars worth meeting</span></div>
+    <div class="logo">代車.com<span>cars worth meeting</span></div>
     <div class="header-actions">
       <button class="round" onclick="goTop()" aria-label="TOPへ戻る"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></button>
       <button class="round" onclick="openSetup()" aria-label="条件変更"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
@@ -252,7 +252,6 @@ body{background:#071018}
 
   <nav class="context" id="context">
     <button class="pill on" data-mode="daisha" onclick="quickMode('daisha')"><span class="dot"></span>代車を探す</button>
-    <button class="pill" data-mode="shijo" onclick="quickMode('shijo')">暮らしで試乗</button>
     <button class="pill" id="datePill" onclick="openSetup()">6/20 10:00 - 6/23 18:00</button>
     <button class="pill" id="areaPill" onclick="openSetup()">● 那覇市内・配送OK</button>
   </nav>
@@ -270,8 +269,7 @@ body{background:#071018}
   <section class="sheet" id="setupSheet">
     <div class="handle"></div><div class="setup-head"><button class="setup-home" onclick="goTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m15 18-6-6 6-6"/></svg>戻る</button><div class="setup-no">03</div><div class="setup-kicker">QUICK INTERVIEW</div><h2>あなたに提案する<br>一台を絞ります。</h2></div>
     <div class="mode-grid">
-      <button class="mode-card on" data-setup-mode="daisha" onclick="selectSetupMode('daisha')"><span class="ico">REPLACEMENT</span><strong>代車が必要</strong><small>修理・車検の数日を、良い車の体験へ。</small></button>
-      <button class="mode-card" data-setup-mode="shijo" onclick="selectSetupMode('shijo')"><span class="ico">LIFE TEST</span><strong>暮らしで試乗</strong><small>家・道・駐車場で、購入前に試す。</small></button>
+      <button class="mode-card on" data-setup-mode="daisha" onclick="selectSetupMode('daisha')" style="grid-column:1/-1"><span class="ico">REPLACEMENT</span><strong>代車が必要</strong><small>修理・車検の数日を、いつもと違う良い車の体験へ。ご指定の場所までお届けします。</small></button>
     </div>
     <span class="field-label">届け先エリア（必須）</span>
     <div class="area-box">
