@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>代車・試乗.com｜PC＆モバイル 同時プレビュー</title>
+<style>
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#d9d4ca;color:#171813;min-height:100vh}
+ .bar{position:sticky;top:0;z-index:5;background:#151613;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+ .bar b{font-weight:900;letter-spacing:-.3px}
+ .bar .tag{font-size:11px;color:#cfd2c8;background:#2a2c27;border-radius:20px;padding:5px 11px;font-weight:700}
+ .bar .sp{flex:1}
+ .bar button{border:1px solid #3a3c35;background:#1d1f1b;color:#fff;border-radius:9px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer}
+ .bar button:hover{background:#2a2c27}
+ .wrap{display:flex;gap:26px;align-items:flex-start;padding:24px;overflow:auto}
+ .col{flex:none}
+ .col h2{font-size:12px;font-weight:900;letter-spacing:1px;color:#5a5b53;margin:0 0 10px 4px;text-transform:uppercase}
+ /* phone frame */
+ .phone{width:390px;height:844px;border:12px solid #16140f;border-radius:46px;overflow:hidden;background:#000;box-shadow:0 30px 70px rgba(0,0,0,.28);position:relative}
+ .phone iframe{width:390px;height:844px;border:0;display:block}
+ /* pc frame */
+ .pc{width:1320px;height:840px;border:10px solid #16140f;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 30px 70px rgba(0,0,0,.28)}
+ .pc iframe{width:1320px;height:840px;border:0;display:block}
+ .hint{font-size:11px;color:#6a6b62;margin:8px 0 0 4px;font-weight:600}
+</style>
+</head>
+<body>
+ <div class="bar">
+   <b>代車・試乗.com</b>
+   <span class="tag">同時プレビュー</span>
+   <span class="tag">📱 モバイル 390px</span>
+   <span class="tag">🖥 PC 1180px</span>
+   <span class="sp"></span>
+   <button onclick="jump('')">スマホ:イントロ</button>
+   <button onclick="jump('?s=setup')">3問</button>
+   <button onclick="jump('?s=swipe')">スワイプ</button>
+   <button onclick="jump('?s=detail')">内装シート</button>
+   <button onclick="jump('?s=match')">マッチ</button>
+   <button onclick="reloadAll()">⟳ 両方リロード</button>
+ </div>
+ <div class="wrap">
+   <div class="col">
+     <h2>📱 Mobile（顧客）</h2>
+     <div class="phone"><iframe id="mob" src="index.html"></iframe></div>
+     <div class="hint">スワイプ／タップで実操作できます</div>
+   </div>
+   <div class="col">
+     <h2>🖥 PC（顧客・スマホと同一デザイン）</h2>
+     <div class="pc"><iframe id="pc" src="index.html"></iframe></div>
+     <div class="hint">スマホと同じ顧客アプリを中央表示（広い画面でも同一体験）</div>
+   </div>
+ </div>
+<script>
+ function jump(q){document.getElementById('mob').src='index.html'+q;}
+ function reloadAll(){document.getElementById('mob').src='index.html';document.getElementById('pc').src='index.html';}
+</script>
+</body>
+</html>
