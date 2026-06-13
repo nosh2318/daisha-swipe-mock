@@ -412,7 +412,19 @@ function render(){
   deck.appendChild(el);if(depth===0){topCard=el;currentCar=car;attachDrag(el)}
  });
 }
-function attachDrag(el){const pass=el.querySelector('.pass'),like=el.querySelector('.like');const down=e=>{dragging=true;const p=e.touches?e.touches[0]:e;startX=p.clientX;startY=p.clientY;el.style.transition='none'};const move=e=>{if(!dragging)return;const p=e.touches?e.touches[0]:e;dragX=p.clientX-startX;const dy=(p.clientY-startY)*.22;el.style.transform=`translate(${dragX}px,${dy}px) rotate(${dragX/18}deg)`;like.style.opacity=dragX>15?Math.min(1,dragX/80):0;pass.style.opacity=dragX<-15?Math.min(1,-dragX/80):0};const up=()=>{if(!dragging)return;dragging=false;el.style.transition='transform .45s cubic-bezier(.2,.9,.22,1),opacity .3s';if(Math.abs(dragX)>95)fly(dragX>0?1:-1);else{el.style.transform='';pass.style.opacity=like.style.opacity=0}dragX=0};el.addEventListener('pointerdown',down);window.addEventListener('pointermove',move);window.addEventListener('pointerup',up)}
+function attachDrag(el){
+  const pass=el.querySelector('.pass'),like=el.querySelector('.like');
+  el.style.touchAction='pan-y'; // 縦スクロールは残し、横ドラッグは自前で処理（ブラウザのジェスチャ横取り防止）
+  let active=false,pid=null;
+  const down=e=>{active=true;dragging=true;pid=(e.pointerId!=null?e.pointerId:null);const p=e.touches?e.touches[0]:e;startX=p.clientX;startY=p.clientY;el.style.transition='none';try{if(pid!=null&&el.setPointerCapture)el.setPointerCapture(pid);}catch(_){}}
+  const move=e=>{if(!active)return;const p=e.touches?e.touches[0]:e;dragX=p.clientX-startX;const dy=(p.clientY-startY)*.22;el.style.transform=`translate(${dragX}px,${dy}px) rotate(${dragX/18}deg)`;like.style.opacity=dragX>15?Math.min(1,dragX/80):0;pass.style.opacity=dragX<-15?Math.min(1,-dragX/80):0}
+  const up=()=>{if(!active)return;active=false;dragging=false;el.style.transition='transform .45s cubic-bezier(.2,.9,.22,1),opacity .3s';if(Math.abs(dragX)>95)fly(dragX>0?1:-1);else{el.style.transform='';pass.style.opacity=like.style.opacity=0}dragX=0;try{if(pid!=null&&el.releasePointerCapture)el.releasePointerCapture(pid);}catch(_){}pid=null}
+  /* カード要素自身に紐付け＝カードがDOMから消えればリスナーも消える（window累積リークを解消） */
+  el.addEventListener('pointerdown',down);
+  el.addEventListener('pointermove',move);
+  el.addEventListener('pointerup',up);
+  el.addEventListener('pointercancel',up);
+}
 function swipe(dir){if(index>=CARS.length||!topCard)return;buzz(dir>0?18:9);fly(dir)}
 function fly(dir){const car=currentCar;topCard.style.transform=`translate(${dir*620}px,-20px) rotate(${dir*28}deg)`;topCard.style.opacity=0;setTimeout(()=>{history.push(index);if(dir>0){if(!saved.some(x=>x.name===car.name))saved.push(car);updateSaved();openMatch(car)}else{index++;render()}},230)}
 function undo(){if(!history.length)return;index=history.pop();render();buzz(8)}
