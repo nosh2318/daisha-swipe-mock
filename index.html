@@ -227,7 +227,7 @@ body{background:#071018}
 
   <section class="intro" id="intro">
     <div class="intro-brand"><i>C</i><b>CAR CONCIERGE<span>代車・試乗.com</span></b><button class="intro-menu" onclick="openMenu()">MENU</button></div>
-    <div class="brand-manifesto"><b>CAR DELIVERY EXPERIENCE</b>代車・試乗車で、カーデリバリーを体感しよう。</div>
+    <div class="brand-manifesto"><b>CAR DELIVERY EXPERIENCE</b>代車・試乗車・レンタル で、カーデリバリーを体感しよう。</div>
     <div class="intro-copy">
       <div class="eyebrow">YOUR PERSONAL CAR CONCIERGE</div>
       <h1>MEET YOUR<span>NEXT CAR<em>.</em></span></h1>
@@ -314,7 +314,7 @@ body{background:#071018}
 </main>
 
 <script>
-const CARS=[
+let CARS=[
  {name:'ハリアー / CX-5',jp:'ハリアー / CX-5',year:'Sクラス',img:'assets/class/class_S.png',stock:'残り1台',few:true,base:96,seats:'5',size:'SUV',delivery:'最短90分',
   daisha:{persona:'修理中こそ、静かな余裕を',catch:'突然のトラブルで疲れた日も、乗り心地の良い一台なら移動のストレスを減らせます。',tags:['保険代車OK','即日お届け','上質で静か'],voice:'事故修理で7日間利用したユウキさん',quote:'「代車がご褒美になるとは思わなかった」'},
   shijo:{persona:'憧れを、日常で確かめる',catch:'試乗コースでは分からない静粛性や車幅を、通勤・買い物・自宅駐車場で試せます。',tags:['自宅駐車OK','通勤で試せる','購入相談'],voice:'SUV購入を検討したユウキさん',quote:'「自宅の車庫で試せたのが決め手」'}},
@@ -331,6 +331,39 @@ const CARS=[
   daisha:{persona:'困った日に、いちばん軽やか',catch:'すぐ届いて、街で扱いやすい。修理期間のガソリン代まで抑える、堅実な相棒です。',tags:['最短45分','保険代車OK','低燃費'],voice:'急な故障で利用したナオさん',quote:'「連絡した日に届いて助かった」'},
   shijo:{persona:'ハイブリッドを数字で試す',catch:'静かさと実燃費を、普段の走行距離でチェック。維持費まで含めた購入判断ができます。',tags:['実燃費確認','通勤で試せる','購入相談'],voice:'軽から検討したナオさん',quote:'「一週間の燃費を見て納得できた」'}}
 ];
+/* ════ SPK/那覇 配車表連動：選択店舗の実在空車をクラス単位でスワイプ化（KEYDROP公開ビュー再利用・anon）════ */
+const SB_URL='https://ckrxttbnawkclshczsia.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcnh0dGJuYXdrY2xzaGN6c2lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Nzg1NTAsImV4cCI6MjA4NzQ1NDU1MH0.kDC_UDVWvcrS97wzqQ3NXP79ewjgYwF4vSFdV7y06S8';
+async function sbGet(path){try{const r=await fetch(SB_URL+'/rest/v1/'+path,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+const FALLBACK_CARS=CARS.slice();
+const COPY_BY_CLASS={};
+FALLBACK_CARS.forEach(c=>{const k=String(c.year||'').replace('クラス','').trim();if(k&&!COPY_BY_CLASS[k])COPY_BY_CLASS[k]={daisha:c.daisha,shijo:c.shijo};});
+const COPY_DEFAULT={daisha:{persona:'いつもと違う一台を、安心で',catch:'修理・車検の数日を、運転が楽しい一台で。ご指定の場所までお届けします。',tags:['保険代車OK','即日お届け','違う車を体験'],voice:'代車として利用したお客様',quote:'「代車がちょっとした楽しみになった」'},shijo:{persona:'買う前に、暮らしで試す',catch:'試乗コースでは分からない使い勝手を、自宅・通勤・駐車場で数日試せます。',tags:['自宅で試せる','通勤で確認','購入相談'],voice:'購入を検討したお客様',quote:'「生活で試せたのが決め手」'}};
+const NHA_HAS_IMG=['B','C','F','H','S','D'];
+function classImgSrc(cls){const base='assets/class/class_'+cls;return (store==='naha'&&NHA_HAS_IMG.indexOf(cls)>=0)?base+'_nha.png':base+'.png';}
+function fleetYearMonths(){const out=[];try{const s=new Date(startDate+'T00:00:00'),e=new Date(endDate+'T00:00:00');let y=s.getFullYear(),m=s.getMonth();for(let i=0;i<24;i++){out.push(y+'-'+String(m+1).padStart(2,'0'));if(y===e.getFullYear()&&m===e.getMonth())break;m++;if(m>11){m=0;y++;}}}catch(e){}return out;}
+let fleetLoaded='';
+async function loadFleetForStore(){
+  const suf=(store==='naha')?'_nha_v':'_v',yms=fleetYearMonths(),inEnc=yms.map(y=>'"'+y+'"').join(',');
+  const res=await Promise.all([
+    sbGet('public_keydrop_classes'+suf+'?select=value'),
+    sbGet('public_vehicles'+suf+'?select=code,type,seats'),
+    sbGet('public_busy'+suf+'?lend_date=lte.'+endDate+'&return_date=gte.'+startDate+'&select=vehicle_code'),
+    yms.length?sbGet('public_inactive'+suf+'?year_month=in.('+inEnc+')&select=vehicle_code'):Promise.resolve([]),
+    sbGet('public_maint'+suf+'?select=vehicle_code,start_date,end_date')
+  ]);
+  const cfgRows=res[0],vehs=res[1],busy=res[2],inact=res[3],maint=res[4];
+  if(!cfgRows||!cfgRows[0]||!vehs){CARS=FALLBACK_CARS.slice();fleetLoaded='';return;}
+  let cfg;try{cfg=typeof cfgRows[0].value==='string'?JSON.parse(cfgRows[0].value):cfgRows[0].value;}catch(e){CARS=FALLBACK_CARS.slice();return;}
+  const items=cfg.items||{},order=cfg.order||Object.keys(items),busySet=new Set();
+  (busy||[]).forEach(b=>busySet.add(b.vehicle_code));(inact||[]).forEach(r=>busySet.add(r.vehicle_code));
+  (maint||[]).forEach(m=>{if(m.start_date<=endDate&&m.end_date>=startDate)busySet.add(m.vehicle_code);});
+  const availCount={};(vehs||[]).forEach(v=>{if(!busySet.has(v.code))availCount[v.type]=(availCount[v.type]||0)+1;});
+  const cards=[];
+  order.forEach(cls=>{const it=items[cls];if(!it||it.show===false)return;const n=availCount[cls]||0;if(n<=0)return;const cp=COPY_BY_CLASS[cls]||COPY_DEFAULT;
+    cards.push({_live:true,cls:cls,name:(it.vehicles||it.label||cls+'クラス'),jp:(it.vehicles||it.label||cls+'クラス'),year:(cls+'クラス'),img:classImgSrc(cls),stock:(n<=2?('残り'+n+'台'):'空車あり'),few:n<=2,base:80,seats:String(it.seats||'5').replace(/[名人〜～\s]/g,''),size:(it.label||''),delivery:'最短60分',price:it.price,daisha:cp.daisha,shijo:cp.shijo});});
+  CARS=cards.length?cards:FALLBACK_CARS.slice();fleetLoaded=store+'|'+startDate+'|'+endDate;
+}
 const CAR_MEDIA={
  ALPHARD:[['assets/alphard.png','外観'],['assets/alphard-cockpit.jpg','運転席'],['assets/alphard-second.jpg','2列目'],['assets/alphard-third.jpg','3列目'],['assets/alphard-cargo.jpg','荷室']],
  NOAH:[['assets/noah.png','外観'],['assets/noah-cockpit.jpg','運転席'],['assets/noah-interior-2.jpg','室内'],['assets/noah-interior-3.jpg','後席'],['assets/noah-interior-4.jpg','荷室']]
@@ -359,7 +392,9 @@ function formatDate(value){const d=new Date(value+'T00:00:00');return `${d.getMo
 function updateDates(){startDate=$('startDate').value;startTime=$('startTime').value;endDate=$('endDate').value;endTime=$('endTime').value;const start=new Date(`${startDate}T${startTime||'00:00'}:00`),end=new Date(`${endDate}T${endTime||'00:00'}:00`),days=Math.ceil((end-start)/86400000);const valid=startDate&&startTime&&endDate&&endTime&&end>start;$('dateDays').textContent=valid?`${Math.max(1,days)}日間`:'日時確認';$('dateDays').style.background=valid?'var(--acid)':'#ffd0c6';return valid}
 document.querySelectorAll('#dailyChoices .choice').forEach(x=>x.onclick=()=>{document.querySelectorAll('#dailyChoices .choice').forEach(y=>y.classList.remove('on'));x.classList.add('on');daily=x.textContent});
 document.querySelectorAll('#moodChoices .choice').forEach(x=>x.onclick=()=>{document.querySelectorAll('#moodChoices .choice').forEach(y=>y.classList.remove('on'));x.classList.add('on');mood=x.textContent});
-function finishSetup(){if(!area){showToast('届け先エリアを入力してください');return}if(!updateDates()){showToast('開始日時と返却日時を確認してください');return}closeSheets();$('areaPill').textContent=`${areaAvailable?'●':'?'} ${area}・${areaAvailable?'配送OK':'要確認'}`;$('datePill').textContent=`${formatDate(startDate)} ${startTime} - ${formatDate(endDate)} ${endTime}`;quickMode(mode);index=0;history=[];render();showToast(areaAvailable?`条件に合う6台を提案しました`:`6台を提案しました。配送可否は予約前に確認します`)}
+function finishSetup(){if(!area){showToast('届け先エリアを入力してください');return}if(!updateDates()){showToast('開始日時と返却日時を確認してください');return}closeSheets();$('areaPill').textContent=`${areaAvailable?'●':'?'} ${area}・${areaAvailable?'配送OK':'要確認'}`;$('datePill').textContent=`${formatDate(startDate)} ${startTime} - ${formatDate(endDate)} ${endTime}`;
+  const dk=$('deck');if(dk)dk.innerHTML='<div class="empty"><div><div style="font-size:36px">🚗</div><b>'+(store==='naha'?'那覇':'札幌')+'の空車を確認中…</b><p>配車表からお出しできる車を探しています。</p></div></div>';
+  loadFleetForStore().then(()=>{index=0;history=[];quickMode(mode);const live=CARS[0]&&CARS[0]._live;showToast(live?`${(store==='naha'?'那覇':'札幌')}の空きから${CARS.length}クラスを提案`:`${CARS.length}クラスを提案しました`);}).catch(()=>{CARS=FALLBACK_CARS.slice();index=0;history=[];quickMode(mode);});}
 function quickMode(m){mode=m;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('on',x.dataset.mode===m));document.querySelectorAll('[data-setup-mode]').forEach(x=>x.classList.toggle('on',x.dataset.setupMode===m));document.querySelector('.guide').textContent='いつでも戻れる　今回は違う ← SWIPE → 好き';render();showToast(m==='daisha'?'代車：すぐ届く安心を優先':'試乗：購入判断の体験を優先')}
 function closeSheets(){$('scrim').classList.remove('on');document.querySelectorAll('.sheet').forEach(x=>x.classList.remove('on'))}
 
