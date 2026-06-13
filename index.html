@@ -267,11 +267,8 @@ body{background:#071018}
 
   <div class="scrim" id="scrim" onclick="closeSheets()"></div>
   <section class="sheet" id="setupSheet">
-    <div class="handle"></div><div class="setup-head"><button class="setup-home" onclick="goTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m15 18-6-6 6-6"/></svg>戻る</button><div class="setup-no">03</div><div class="setup-kicker">QUICK INTERVIEW</div><h2>あなたに提案する<br>一台を絞ります。</h2></div>
-    <div class="mode-grid">
-      <button class="mode-card on" data-setup-mode="daisha" onclick="selectSetupMode('daisha')" style="grid-column:1/-1"><span class="ico">REPLACEMENT</span><strong>代車が必要</strong><small>修理・車検の数日を、いつもと違う良い車の体験へ。ご指定の場所までお届けします。</small></button>
-    </div>
-    <span class="field-label">届け先エリア（必須）</span>
+    <div class="handle"></div><div class="setup-head"><button class="setup-home" onclick="goTop()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m15 18-6-6 6-6"/></svg>戻る</button><div class="setup-no">03</div><h2 style="font-family:'DM Sans';font-weight:900;font-size:32px;color:#fff;letter-spacing:-.5px;line-height:1.02;margin-top:8px">QUICK<br>INTERVIEW</h2><div style="font-size:11px;font-weight:800;color:var(--acid);letter-spacing:1px;margin-top:8px">かんたん3ステップで、代車をお届け。</div></div>
+    <span class="field-label" style="margin-top:0">届け先エリア（必須）</span>
     <div class="area-box">
       <div class="area-grid">
         <button class="area-store on" data-store="naha" onclick="selectStore('naha')"><b>那覇市内</b><small>那覇市内へデリバリー</small></button>
@@ -285,8 +282,7 @@ body{background:#071018}
     </div>
     <span class="field-label">いつ必要？（ご利用開始〜返却）</span>
     <div class="date-range"><label class="date-field"><span>ご利用開始</span><div class="date-inputs"><input type="date" id="startDate" value="2026-06-20" onchange="updateDates()"><select id="startTime" onchange="updateDates()" aria-label="ご利用開始時間"><option value="08:00">08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00" selected>10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00">12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option><option value="15:30">15:30</option><option value="16:00">16:00</option><option value="16:30">16:30</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00">18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option><option value="19:30">19:30</option><option value="20:00">20:00</option></select></div></label><div class="date-arrow">→</div><label class="date-field"><span>返却</span><div class="date-inputs"><input type="date" id="endDate" value="2026-06-23" onchange="updateDates()"><select id="endTime" onchange="updateDates()" aria-label="返却時間"><option value="08:00">08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00">10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00">12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option><option value="15:30">15:30</option><option value="16:00">16:00</option><option value="16:30">16:30</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00" selected>18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option><option value="19:30">19:30</option><option value="20:00">20:00</option></select></div></label><div class="date-days" id="dateDays">4日間</div></div>
-    <span class="field-label">普段乗っている車</span><div class="select-row" id="dailyChoices"><button class="choice on">軽</button><button class="choice">コンパクト</button><button class="choice">セダン</button><button class="choice">ミニバン</button><button class="choice">SUV</button></div>
-    <span class="field-label">今回ほしい体験</span><div class="select-row" id="moodChoices"><button class="choice on">広さを試す</button><button class="choice">運転を楽しむ</button><button class="choice">家族で快適</button><button class="choice">上質に乗る</button><button class="choice">燃費を比べる</button></div>
+    <span class="field-label">用途</span><div class="select-row" id="usageChoices"><button class="choice on" onclick="selectUsage('個人',this)">個人利用</button><button class="choice" onclick="selectUsage('事業用',this)">事業用</button></div>
     <button class="primary" onclick="finishSetup()">おすすめ<span>6台</span>を見る</button>
   </section>
   <section class="sheet" id="detailSheet"><div class="handle"></div><div id="detailBody"></div></section>
@@ -371,7 +367,7 @@ const EQUIPMENT={
  ALPHARD:[['🗺️','ナビ','実車装備'],['🎥','ドラレコ','前方記録'],['🚪','両側スライド','乗降しやすい'],['💺','3列シート','7人乗り'],['❄️','後席エアコン','後席も快適'],['🧳','荷室アレンジ','写真で確認']],
  NOAH:[['🗺️','ナビ','実車装備'],['🎥','ドラレコ','前方記録'],['🚪','スライドドア','家族向き'],['💺','3列シート','7-8人乗り'],['🧸','CS対応','取付相談可'],['🧳','荷室アレンジ','写真で確認']]
 };
-let mode='daisha',daily='軽',mood='広さを試す',store='naha',area='那覇市内',areaAvailable=true,startDate='2026-06-20',startTime='10:00',endDate='2026-06-23',endTime='18:00',insurancePlan='',index=0,history=[],saved=[],topCard=null,dragX=0,dragging=false,startX=0,startY=0,currentCar=null,lastReservation=null;
+let mode='daisha',daily='軽',mood='広さを試す',usage='個人',store='naha',area='那覇市内',areaAvailable=true,startDate='2026-06-20',startTime='10:00',endDate='2026-06-23',endTime='18:00',insurancePlan='',index=0,history=[],saved=[],topCard=null,dragX=0,dragging=false,startX=0,startY=0,currentCar=null,lastReservation=null;
 const $=id=>document.getElementById(id);
 const buzz=n=>{try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}}
 function setBizTab(name){document.querySelectorAll('.biz-tab').forEach(x=>x.classList.toggle('on',x.id==='biz-'+name));document.querySelectorAll('[data-biz-tab]').forEach(x=>x.classList.toggle('on',x.dataset.bizTab===name));const titles={overview:'サービス概要',requests:'紹介案件',fleet:'提案できる車',experience:'顧客体験'};$('bizTitle').textContent=titles[name]||'Partner Desk'}
@@ -385,6 +381,7 @@ const STORE_AREAS={
  naha:['那覇市内','那覇市','浦添市','豊見城市','宜野湾市','北谷町','南風原町'],
  sapporo:['札幌市内','札幌市中央区','札幌市北区','札幌市東区','札幌市白石区','札幌市豊平区','札幌市西区']
 };
+function selectUsage(u,el){usage=u;document.querySelectorAll('#usageChoices .choice').forEach(x=>x.classList.remove('on'));el.classList.add('on');}
 function selectStore(next){store=next;document.querySelectorAll('[data-store]').forEach(x=>x.classList.toggle('on',x.dataset.store===next));const initial=next==='naha'?'那覇市内':'札幌市内';$('areaInput').value=initial;$('areaNote').textContent=next==='naha'?'那覇市内へ配送。範囲外はスタッフが確認します。':'札幌市内へ配送。新千歳空港・千歳市は対象外です。';checkArea(initial)}
 function checkArea(value){area=String(value||'').trim();const list=STORE_AREAS[store];areaAvailable=area!==''&&area!=='その他'&&list.some(x=>area.includes(x)||x.includes(area));const box=$('areaResult');box.classList.toggle('pending',!areaAvailable);box.innerHTML=areaAvailable?'<i>✓</i><div><b>配送OK</b><span>配送可能エリアです</span></div>':'<i>?</i><div><b>要確認</b><span>スタッフが確認します</span></div>'}
 function formatDate(value){const d=new Date(value+'T00:00:00');return `${d.getMonth()+1}/${d.getDate()}`}
