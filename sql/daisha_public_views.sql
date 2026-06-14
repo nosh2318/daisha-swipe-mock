@@ -23,6 +23,24 @@ create or replace view public.public_daisha_product_nha_v as
 
 grant select on public.public_daisha_product_nha_v to anon, authenticated;
 
+-- ===== 価格設定（hdm_daisha_price） 札幌 =====
+create or replace view public.public_daisha_price_v as
+  select value
+  from public.app_settings
+  where key = 'hdm_daisha_price';
+
+grant select on public.public_daisha_price_v to anon, authenticated;
+
+-- ===== 価格設定（hdm_daisha_price） 那覇 =====
+create or replace view public.public_daisha_price_nha_v as
+  select value
+  from public.nha_app_settings
+  where key = 'hdm_daisha_price';
+
+grant select on public.public_daisha_price_nha_v to anon, authenticated;
+
 -- 確認:
 --   select * from public.public_daisha_product_v;
 --   select * from public.public_daisha_product_nha_v;
+--   select * from public.public_daisha_price_v;
+--   select * from public.public_daisha_price_nha_v;
