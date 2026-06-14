@@ -29,7 +29,7 @@ button{font:inherit;color:inherit}
 /* onboarding */
 .intro{position:absolute;inset:0;z-index:50;background:radial-gradient(circle at 84% 10%,rgba(223,255,0,.22),transparent 25%),radial-gradient(circle at 4% 37%,rgba(85,119,255,.12),transparent 32%),linear-gradient(160deg,#fffaf0 0%,#f2eedc 30%,#dcebe3 49%,#596860 62%,#20231f 72%,#080908 100%);color:#fff;display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 20px max(18px,env(safe-area-inset-bottom));transition:transform .7s cubic-bezier(.22,.9,.25,1),opacity .5s;overflow:hidden}
 .intro:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,8,0) 0 44%,rgba(8,9,8,.2) 52%,rgba(8,9,8,.9) 72%,#080908 100%);pointer-events:none}
-.intro.hide{transform:translateY(-105%);opacity:.6}
+.intro.hide{transform:translateY(-110%);opacity:0;visibility:hidden;pointer-events:none}
 .intro-brand{font-family:"DM Sans";font-weight:800;letter-spacing:-.5px;font-size:16px;display:flex;align-items:center;gap:8px;position:relative;z-index:4;color:var(--ink)}
 .brand-logo{height:56px;width:auto;max-width:84vw;display:block;filter:drop-shadow(0 2px 9px rgba(0,0,0,.5))}.intro-brand i{width:10px;height:10px;border-radius:50%;background:var(--acid);box-shadow:0 0 0 5px rgba(223,255,0,.13)}.intro-brand small{margin-left:auto;color:#686b65;font-size:8px;letter-spacing:1.3px}.intro-menu{margin-left:auto;color:#686b65;font:800 8px "DM Sans";letter-spacing:1.3px;background:transparent;border:0;cursor:pointer}
 .intro-copy{position:relative;z-index:4;order:3;margin-top:auto}.eyebrow{font-family:"DM Sans";font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--acid)}
