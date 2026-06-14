@@ -382,6 +382,7 @@ const SB_URL='https://ckrxttbnawkclshczsia.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrcnh0dGJuYXdrY2xzaGN6c2lhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Nzg1NTAsImV4cCI6MjA4NzQ1NDU1MH0.kDC_UDVWvcrS97wzqQ3NXP79ewjgYwF4vSFdV7y06S8';
 async function sbGet(path){try{const r=await fetch(SB_URL+'/rest/v1/'+path,{headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY}});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
 const FALLBACK_CARS=CARS.slice();
+let DAISHA_PROD={}; /* 管理APP「代車.com商品情報設定」(hdm_daisha_product) の items。公開ビュー未作成時は空＝既定表示 */
 const COPY_BY_CLASS={};
 FALLBACK_CARS.forEach(c=>{const k=String(c.year||'').replace('クラス','').trim();if(k&&!COPY_BY_CLASS[k])COPY_BY_CLASS[k]={daisha:c.daisha,shijo:c.shijo};});
 const COPY_DEFAULT={daisha:{persona:'いつもと違う一台を、安心で',catch:'修理・車検の数日を、運転が楽しい一台で。ご指定の場所までお届けします。',tags:['保険代車OK','即日お届け','違う車を体験'],voice:'代車として利用したお客様',quote:'「代車がちょっとした楽しみになった」'},shijo:{persona:'買う前に、暮らしで試す',catch:'試乗コースでは分からない使い勝手を、自宅・通勤・駐車場で数日試せます。',tags:['自宅で試せる','通勤で確認','購入相談'],voice:'購入を検討したお客様',quote:'「生活で試せたのが決め手」'}};
@@ -399,9 +400,11 @@ async function loadFleetForStore(){
     sbGet('public_vehicles'+suf+'?select=code,type,seats'),
     sbGet('public_busy'+suf+'?lend_date=lte.'+endDate+'&return_date=gte.'+startDate+'&select=vehicle_code'),
     yms.length?sbGet('public_inactive'+suf+'?year_month=in.('+inEnc+')&select=vehicle_code'):Promise.resolve([]),
-    sbGet('public_maint'+suf+'?select=vehicle_code,start_date,end_date')
+    sbGet('public_maint'+suf+'?select=vehicle_code,start_date,end_date'),
+    sbGet('public_daisha_product'+suf+'?select=value')
   ]);
   const cfgRows=res[0],vehs=res[1],busy=res[2],inact=res[3],maint=res[4];
+  try{const pr=res[5];if(pr&&pr[0]){const pj=typeof pr[0].value==='string'?JSON.parse(pr[0].value):pr[0].value;DAISHA_PROD=(pj&&pj.items)||{};}else{DAISHA_PROD={};}}catch(e){DAISHA_PROD={};}
   if(!cfgRows||!cfgRows[0]||!vehs){CARS=FALLBACK_CARS.slice();fleetLoaded='';return;}
   let cfg;try{cfg=typeof cfgRows[0].value==='string'?JSON.parse(cfgRows[0].value):cfgRows[0].value;}catch(e){CARS=FALLBACK_CARS.slice();return;}
   const items=cfg.items||{},order=cfg.order||Object.keys(items),busySet=new Set();
@@ -410,7 +413,11 @@ async function loadFleetForStore(){
   const availCount={};(vehs||[]).forEach(v=>{if(!busySet.has(v.code))availCount[v.type]=(availCount[v.type]||0)+1;});
   const cards=[];
   order.forEach(cls=>{const it=items[cls];if(!it||it.show===false)return;const n=availCount[cls]||0;if(n<=0)return;const cp=COPY_BY_CLASS[cls]||COPY_DEFAULT;
-    cards.push({_live:true,cls:cls,name:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),jp:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),year:(cls+'クラス'),img:classImgSrc(cls),stock:(n<=2?('残り'+n+'台'):'空車あり'),few:n<=2,base:80,seats:String(it.seats||'5').replace(/[名人〜～\s]/g,''),size:(it.label||''),delivery:'最短60分',price:it.price,daisha:cp.daisha,shijo:cp.shijo});});
+    const pd=DAISHA_PROD[cls]||{};
+    const cpD=Object.assign({},cp.daisha),cpS=Object.assign({},cp.shijo);
+    if(pd.persona){if(pd.persona.daisha)cpD.persona=pd.persona.daisha;if(pd.persona.shijo)cpS.persona=pd.persona.shijo;}
+    if(pd.tags){if(pd.tags.daisha&&pd.tags.daisha.length)cpD.tags=pd.tags.daisha;if(pd.tags.shijo&&pd.tags.shijo.length)cpS.tags=pd.tags.shijo;}
+    cards.push({_live:true,cls:cls,name:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),jp:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),year:(pd.year||(cls+'クラス')),img:classImgSrc(cls),stock:(n<=2?('残り'+n+'台'):'空車あり'),few:n<=2,base:80,seats:String(it.seats||'5').replace(/[名人〜～\s]/g,''),size:(it.label||''),delivery:'最短60分',price:it.price,daisha:cpD,shijo:cpS,prod:pd});});
   CARS=cards.length?cards:FALLBACK_CARS.slice();fleetLoaded=store+'|'+startDate+'|'+endDate;
 }
 const CAR_MEDIA={
@@ -484,8 +491,10 @@ function showSaved(){if(!saved.length){showToast('好きな車はまだありま
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('on');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('on'),2200)}
 function openDetail(){
  if(!currentCar)return;
- const c=currentCar,copy=c[mode],media=CAR_MEDIA[c.name]||[[c.img,'外観']],equipment=EQUIPMENT[c.name]||[['🗺️','ナビ','車両ごとに確認'],['🎥','ドラレコ','車両ごとに確認'],['🔌','充電端子','車両ごとに確認'],['🧳','荷室','写真追加予定']],initial=0;
- const checks=mode==='daisha'?[['すぐ使える？','お届け時間と保険適用を予約前に確認'],['家族が乗れる？',`${c.seats}人乗り。チャイルドシートも相談可能`],['返却は簡単？','指定場所で回収。店舗へ戻す必要なし']]:[['車庫に入る？','自宅まで届けて実際の駐車環境で確認'],['家族の評価は？','後席・乗降・荷物を普段どおり試せる'],['維持できる？','通勤で実燃費と取り回しを確認']];
+ const c=currentCar,copy=c[mode],pd=c.prod||{},initial=0;
+ const media=(pd.gallery&&pd.gallery.length)?([[c.img,'外観']].concat(pd.gallery)):(CAR_MEDIA[c.name]||[[c.img,'外観']]);
+ const equipment=(pd.equipment&&pd.equipment.length)?pd.equipment:(EQUIPMENT[c.name]||[['🗺️','ナビ','車両ごとに確認'],['🎥','ドラレコ','車両ごとに確認'],['🔌','充電端子','車両ごとに確認'],['🧳','荷室','写真追加予定']]);
+ const checks=(pd.checks&&pd.checks[mode]&&pd.checks[mode].length)?pd.checks[mode]:(mode==='daisha'?[['すぐ使える？','お届け時間と保険適用を予約前に確認'],['家族が乗れる？',`${c.seats}人乗り。チャイルドシートも相談可能`],['返却は簡単？','指定場所で回収。店舗へ戻す必要なし']]:[['車庫に入る？','自宅まで届けて実際の駐車環境で確認'],['家族の評価は？','後席・乗降・荷物を普段どおり試せる'],['維持できる？','通勤で実燃費と取り回しを確認']]);
  $('detailBody').innerHTML=`<button onclick="closeSheets()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:999px;padding:9px 16px;font-size:12px;font-weight:800;cursor:pointer;margin-bottom:14px">‹ 戻る</button><div class="eyebrow" style="color:var(--acid);margin-bottom:9px">VEHICLE DETAILS</div><div class="detail-hero"><img id="detailMainImg" src="${media[initial][0]}" alt="${c.jp}"><div class="detail-title">${c.jp}</div></div><div class="gallery-strip">${media.map((m,i)=>`<button class="gallery-thumb ${i===initial?'on':''}" onclick="setDetailImage('${m[0]}',this)"><img src="${m[0]}" alt="${m[1]}"><span>${m[1]}</span></button>`).join('')}</div><div class="eyebrow" style="color:var(--acid);margin-top:18px">BASIC INFORMATION</div><div class="facts"><div class="fact"><b>${c.year}</b><span>年式</span></div><div class="fact"><b>${c.seats}人</b><span>乗車定員</span></div><div class="fact"><b>${c.size}</b><span>ボディタイプ</span></div></div><section class="detail-section"><div class="detail-section-head"><h3>車両装備</h3><small>実車ごとに最終確認</small></div><div class="equipment-grid">${equipment.map(x=>`<div class="equipment"><i>${x[0]}</i><div><b>${x[1]}</b><span>${x[2]}</span></div></div>`).join('')}</div></section><section class="detail-section"><h3>${mode==='daisha'?'借りる前の安心チェック':'暮らし試乗で確かめること'}</h3><div class="use-checks">${checks.map(x=>`<div class="use-check"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')}</div></section><button class="primary" onclick="closeSheets();swipe(1)"><span>♡</span> この車が好き</button>`;
  $('scrim').classList.add('on');$('detailSheet').classList.add('on');
 }
