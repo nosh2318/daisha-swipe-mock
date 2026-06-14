@@ -175,8 +175,8 @@ body{background:#071018}
 /* optimized quick interview */
 #setupSheet{padding:16px 18px max(30px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#f8f9f6,#f2f4f0)}
 #setupSheet .reserve-head{height:40px;margin-bottom:12px}.reserve-head .reserve-step{font-size:7px;letter-spacing:1.7px;color:#7b8589}.reserve-back{width:38px;height:38px;box-shadow:0 5px 15px rgba(7,16,24,.06)}
-#setupSheet .setup-intro{display:grid;grid-template-columns:128px 1fr;gap:15px;align-items:center;margin:0;padding:18px;border-radius:22px;background:radial-gradient(circle at 90% 10%,rgba(223,255,0,.2),transparent 30%),linear-gradient(135deg,#061018,#10232c 72%,#354b2b);box-shadow:0 16px 34px rgba(7,16,24,.14)}
-#setupSheet .setup-intro img{display:block;width:128px;height:auto;object-fit:contain}
+#setupSheet .setup-intro{display:block;margin:0;padding:20px;border-radius:22px;background:radial-gradient(circle at 90% 10%,rgba(223,255,0,.2),transparent 30%),linear-gradient(135deg,#061018,#10232c 72%,#354b2b);box-shadow:0 16px 34px rgba(7,16,24,.14)}
+#setupSheet .setup-intro img{display:block;width:158px;max-width:58%;height:auto;object-fit:contain;margin-bottom:16px}
 #setupSheet .setup-intro small{font-size:6.5px;letter-spacing:1.15px;color:var(--acid)}
 #setupSheet .setup-intro h2{font-size:19px;line-height:1.3;letter-spacing:-.8px;margin-top:5px;color:#fff}
 #setupSheet .setup-intro p{font-size:8.5px;line-height:1.65;margin-top:6px;color:#b8c3c6}
@@ -190,7 +190,12 @@ body{background:#071018}
 #setupSheet .date-field select{text-align:center;padding:0 8px}.date-days{margin-top:0;padding:8px 14px;font-size:11px}
 #setupSheet .select-row{gap:8px}.choice{min-width:94px;padding:12px 20px;font-size:12px;background:#fff}.choice.on{box-shadow:0 7px 18px rgba(183,211,0,.18)}
 #setupSheet .primary{margin-top:24px;padding:17px;border-radius:999px;font-size:13px;box-shadow:0 15px 32px rgba(7,16,24,.16)}
-@media(max-width:420px){#setupSheet .setup-intro{grid-template-columns:104px 1fr;padding:16px;gap:12px}#setupSheet .setup-intro img{width:104px}#setupSheet .setup-intro h2{font-size:17px}.date-field{grid-template-columns:62px 1fr}.date-inputs{grid-template-columns:minmax(0,1fr) 94px}}
+.setup-section{margin-top:17px;padding:17px;border:1px solid rgba(7,16,24,.08);border-radius:22px;background:#fff;box-shadow:0 12px 34px rgba(7,16,24,.055)}
+.setup-section-head{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;margin-bottom:14px}.setup-section-no{width:38px;height:38px;border-radius:12px;background:#071018;color:var(--acid);display:grid;place-items:center;font:800 11px "DM Sans"}.setup-section-copy small{display:block;color:#8b9900;font:800 7px "DM Sans";letter-spacing:1.35px}.setup-section-copy h3{font-size:16px;line-height:1.25;letter-spacing:-.35px;margin-top:3px}.setup-section-copy p{font-size:8px;line-height:1.55;color:#778085;margin-top:4px}
+#setupSheet .setup-section .area-box{margin:0;box-shadow:none;border-radius:16px;background:#f5f7f4}#setupSheet .setup-section .area-store{min-height:50px}#setupSheet .setup-section .area-line{background:#fff;border-radius:0 0 12px 12px;margin-top:4px}
+#setupSheet .setup-section .date-range{gap:9px}.setup-section .date-field{display:block;border:1px solid rgba(7,16,24,.08);border-radius:16px;padding:11px;background:#f5f7f4}.setup-section .date-field>span{display:block;margin:0 0 7px;color:#657076;font-size:8px;letter-spacing:.5px}.setup-section .date-inputs{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:7px}.setup-section .date-field input,.setup-section .date-field select{height:48px;min-height:48px;border-radius:11px;background:#fff;border:1px solid rgba(7,16,24,.08);padding:0 11px;font:800 13px "DM Sans";min-width:0;width:100%;box-shadow:none}.setup-section .date-field select{text-align:center}.setup-section .date-days{align-self:auto;justify-self:start;margin:2px 0 0;padding:7px 12px;font-size:10px}.setup-section .date-days:before{content:"利用期間 ";font-weight:700}
+#setupSheet .setup-section .select-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}#setupSheet .setup-section .choice{width:100%;min-width:0;padding:13px 10px;border-radius:13px;text-align:center}.setup-section.usage-section{margin-bottom:0}
+@media(max-width:420px){#setupSheet .setup-intro{padding:17px}#setupSheet .setup-intro img{width:148px;max-width:62%;margin-bottom:13px}#setupSheet .setup-intro h2{font-size:18px}.setup-section{padding:14px;border-radius:19px}.setup-section-head{grid-template-columns:34px 1fr;gap:10px}.setup-section-no{width:34px;height:34px}.setup-section .date-inputs{grid-template-columns:minmax(0,1fr) 86px}}
 </style>
 </head>
 <body>
@@ -310,8 +315,8 @@ body{background:#071018}
   <div class="scrim" id="scrim" onclick="closeSheets()"></div>
   <section class="reserve-screen" id="setupSheet">
     <div class="reserve-head"><button class="reserve-back" onclick="goTop()">‹</button><div class="reserve-step">QUICK INTERVIEW</div></div>
-    <div class="menu-brand setup-intro"><img src="assets/daisha-com-logo-framed.png" alt="代車.com Replacement vehicle Service"><div><small>QUICK & EASY DELIVERY</small><h2>3ステップで、<br>あなたに合う代車を。</h2><p>エリア・日程・用途を選ぶだけ。空車からおすすめをご提案します。</p></div></div>
-    <span class="field-label" style="margin-top:26px">届け先エリア（必須）</span>
+    <div class="menu-brand setup-intro"><img src="assets/logo_daisha.png" alt="代車.com Replacement Vehicle Service"><div><small>QUICK & EASY DELIVERY</small><h2>3ステップで、<br>あなたに合う代車を。</h2><p>エリア・日程・用途を選ぶだけ。空車からおすすめをご提案します。</p></div></div>
+    <section class="setup-section"><div class="setup-section-head"><span class="setup-section-no">01</span><div class="setup-section-copy"><small>DELIVERY AREA</small><h3>お届け先エリア</h3><p>車両をお届けできる地域を選択してください。</p></div></div>
     <div class="area-box">
       <div class="area-grid">
         <button class="area-store on" data-store="naha" onclick="selectStore('naha')"><b>那覇市内</b><small>那覇市内へデリバリー</small></button>
@@ -322,10 +327,11 @@ body{background:#071018}
         <div class="area-result" id="areaResult"><i>✓</i><div><b>配送OK</b><span>空車をこの場所までお届けできます</span></div></div>
       </div>
       <p class="area-note" id="areaNote">那覇市周辺へ配送。範囲外はスタッフが確認します。</p>
-    </div>
-    <span class="field-label">いつ必要？（ご利用開始〜返却）</span>
+    </div></section>
+    <section class="setup-section"><div class="setup-section-head"><span class="setup-section-no">02</span><div class="setup-section-copy"><small>DATE & TIME</small><h3>いつ必要ですか？</h3><p>ご利用開始と返却の日時を設定してください。</p></div></div>
     <div class="date-range"><label class="date-field"><span>ご利用開始</span><div class="date-inputs"><input type="date" id="startDate" value="2026-06-20" onchange="updateDates()"><select id="startTime" onchange="updateDates()" aria-label="ご利用開始時間"><option value="08:00">08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00" selected>10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00">12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option><option value="15:30">15:30</option><option value="16:00">16:00</option><option value="16:30">16:30</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00">18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option><option value="19:30">19:30</option><option value="20:00">20:00</option></select></div></label><div class="date-arrow">→</div><label class="date-field"><span>返却</span><div class="date-inputs"><input type="date" id="endDate" value="2026-06-23" onchange="updateDates()"><select id="endTime" onchange="updateDates()" aria-label="返却時間"><option value="08:00">08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00">10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00">12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option><option value="15:30">15:30</option><option value="16:00">16:00</option><option value="16:30">16:30</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00" selected>18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option><option value="19:30">19:30</option><option value="20:00">20:00</option></select></div></label><div class="date-days" id="dateDays">4日間</div></div>
-    <span class="field-label">用途</span><div class="select-row" id="usageChoices"><button class="choice on" onclick="selectUsage('個人',this)">個人利用</button><button class="choice" onclick="selectUsage('事業用',this)">事業用</button></div>
+    </section>
+    <section class="setup-section usage-section"><div class="setup-section-head"><span class="setup-section-no">03</span><div class="setup-section-copy"><small>USAGE</small><h3>ご利用用途</h3><p>今回の利用目的に近いものを選択してください。</p></div></div><div class="select-row" id="usageChoices"><button class="choice on" onclick="selectUsage('個人',this)">個人利用</button><button class="choice" onclick="selectUsage('事業用',this)">事業用</button></div></section>
     <button class="primary" onclick="finishSetup()">おすすめ<span>6台</span>を見る</button>
   </section>
   <section class="sheet" id="detailSheet"><div class="handle"></div><div id="detailBody"></div></section>
