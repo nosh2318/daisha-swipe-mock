@@ -389,7 +389,7 @@ const COPY_DEFAULT={daisha:{persona:'いつもと違う一台を、安心で',ca
 const NHA_HAS_IMG=['B','C','F','H','S','D'];
 function classImgSrc(cls){const base='assets/class/class_'+cls;return (store==='naha'&&NHA_HAS_IMG.indexOf(cls)>=0)?base+'_nha.png':base+'.png';}
 function shortVehicles(s){if(!s)return s;const parts=String(s).split(/[\/／,、]/).map(x=>x.trim()).filter(Boolean);return parts.length<=2?parts.join(' / '):parts.slice(0,2).join(' / ')+' 等';}
-function cardClassName(car){const cls=String(car.cls||car.year||'').replace('クラス','').trim(),first=String(car.jp||car.name||'').split(/[\/／,、]/)[0].trim();if(cls==='A')return 'アルファードクラス';if(cls==='B')return 'ミニバンクラス';if(cls==='C')return 'コンパクトSUVクラス';if(cls==='S')return 'SUVクラス';if(cls==='H')return first?first+'クラス':'セダンクラス';return first||car.name;}
+function cardClassName(car){if(car.cardName)return car.cardName;const cls=String(car.cls||car.year||'').replace('クラス','').trim(),first=String(car.jp||car.name||'').split(/[\/／,、]/)[0].trim();if(cls==='A')return 'アルファードクラス';if(cls==='B')return 'ミニバンクラス';if(cls==='C')return 'コンパクトSUVクラス';if(cls==='S')return 'SUVクラス';if(cls==='H')return first?first+'クラス':'セダンクラス';return first||car.name;}
 function cardMeta(car){const year=String(car.year||'').trim(),size=String(car.size||'').trim();return size&&size!==year?year+' / '+size:year;}
 function fleetYearMonths(){const out=[];try{const s=new Date(startDate+'T00:00:00'),e=new Date(endDate+'T00:00:00');let y=s.getFullYear(),m=s.getMonth();for(let i=0;i<24;i++){out.push(y+'-'+String(m+1).padStart(2,'0'));if(y===e.getFullYear()&&m===e.getMonth())break;m++;if(m>11){m=0;y++;}}}catch(e){}return out;}
 let fleetLoaded='';
@@ -417,7 +417,7 @@ async function loadFleetForStore(){
     const cpD=Object.assign({},cp.daisha),cpS=Object.assign({},cp.shijo);
     if(pd.persona){if(pd.persona.daisha)cpD.persona=pd.persona.daisha;if(pd.persona.shijo)cpS.persona=pd.persona.shijo;}
     if(pd.tags){if(pd.tags.daisha&&pd.tags.daisha.length)cpD.tags=pd.tags.daisha;if(pd.tags.shijo&&pd.tags.shijo.length)cpS.tags=pd.tags.shijo;}
-    cards.push({_live:true,cls:cls,name:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),jp:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),year:(pd.year||(cls+'クラス')),img:classImgSrc(cls),stock:(n<=2?('残り'+n+'台'):'空車あり'),few:n<=2,base:80,seats:String(it.seats||'5').replace(/[名人〜～\s]/g,''),size:(it.label||''),delivery:'最短60分',price:it.price,daisha:cpD,shijo:cpS,prod:pd});});
+    cards.push({_live:true,cls:cls,name:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),jp:(shortVehicles(it.vehicles)||it.label||cls+'クラス'),year:(pd.year||(cls+'クラス')),img:classImgSrc(cls),stock:(n<=2?('残り'+n+'台'):'空車あり'),few:n<=2,base:80,seats:String(it.seats||'5').replace(/[名人〜～\s]/g,''),size:(it.label||''),delivery:'最短60分',price:it.price,daisha:cpD,shijo:cpS,prod:pd,cardName:(pd.cardName||'')});});
   CARS=cards.length?cards:FALLBACK_CARS.slice();fleetLoaded=store+'|'+startDate+'|'+endDate;
 }
 const CAR_MEDIA={
